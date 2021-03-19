@@ -16,12 +16,10 @@ ResizeStorageStatus resize_storage(Book *&storage, int size, int new_capacity) {
   if (size < 0) {
       return ResizeStorageStatus::NEGATIVE_SIZE;
   }
-    auto new_storage = storage;
+    Book *new_storage = storage;
     storage = new Book[new_capacity];
-    delete[] storage;
     std::copy(new_storage, new_storage + size, storage);
     delete[] new_storage;
-    new_storage = nullptr;
     return ResizeStorageStatus::SUCCESS;
 }
 
@@ -50,11 +48,14 @@ void BookStore::AddBook(const Book &book) {
     // Tip 1: используйте функцию resize_storage_internal, задав новый размер хранилища
     // Tip 2: не забудьте обработать статус вызова функции
   if (storage_size_ == storage_capacity_) {
-    resize_storage_internal(storage_capacity_ + kCapacityCoefficient);
+      ResizeStorageStatus resizeStatus = resize_storage_internal(storage_capacity_ + kCapacityCoefficient);
+      if (resizeStatus != ResizeStorageStatus::SUCCESS) {
+          return;
+      }
   }
-  // Tip 3: не забудьте добавить книгу в наше бездонное хранилище ...
   storage_[storage_size_] = book;
   storage_size_++;
+  // Tip 3: не забудьте добавить книгу в наше бездонное хранилище ...
 }
 
 // РЕАЛИЗОВАНО

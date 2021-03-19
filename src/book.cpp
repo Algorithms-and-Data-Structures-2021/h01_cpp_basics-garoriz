@@ -39,7 +39,7 @@ bool Book::AddAuthor(const Author &author) {
             return false;
         }
     }
-    authors_[authors_.size() + 1] = author;
+    authors_.push_back(author);
   return true;
 }
 
